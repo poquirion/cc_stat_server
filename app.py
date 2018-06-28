@@ -11,7 +11,7 @@ def reports():
     return r
 
 @app.route('/pouet')
-def reports():
+def pouet():
     r = Response(back.reports())
     r.content_type = "text/plain"
     return "Pouet\nPouet en effet!"
