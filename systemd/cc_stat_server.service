@@ -1,0 +1,12 @@
+[Unit]
+Description="server for CC HCP status"
+After=network.target
+
+[Service]
+User=lewww
+Group=lewww
+Environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
+ExecStart=/home/centos/cc_stat_server/venv/bin/gunicorn  --bind 127.0.0.1:8000  app:app
+
+[Install]
+WantedBy=multi-user.target
