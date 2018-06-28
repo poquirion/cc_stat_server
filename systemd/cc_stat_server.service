@@ -6,7 +6,12 @@ After=network.target
 User=lewww
 Group=lewww
 Environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
-ExecStart=/home/centos/cc_stat_server/venv/bin/gunicorn  --bind 127.0.0.1:8000  app:app
+WorkingDirectory=/home/centos/cc_stat_server
+ExecStart=./venv/bin/gunicorn  -reload --bind 127.0.0.1:8000 --access-logfile ../gunicorn-acces.log --error-logfile ../gunicorn-error.log app:app
+
+
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
 
 [Install]
 WantedBy=multi-user.target
