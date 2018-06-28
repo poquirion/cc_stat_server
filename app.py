@@ -10,6 +10,13 @@ def reports():
     r.content_type = "text/plain"
     return r
 
+@app.route('/pouet')
+def reports():
+    r = Response(back.reports())
+    r.content_type = "text/plain"
+    return "Pouet\nPouet en effet!"
+
+
 
 if __name__ == '__main__':
     app.run()
