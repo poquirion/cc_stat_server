@@ -2,8 +2,8 @@ from setuptools import setup
 
 requirements = {
         "Flask": "1.0.2",
-        "fabric": "2.1.3"
-
+        "fabric": "2.1.3",
+        "gunicorn": "19.8.1"
     }
 
 setup(name='cc_stat_server',
