@@ -7,7 +7,7 @@ User=lewww
 Group=lewww
 Environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
 WorkingDirectory=/home/centos/cc_stat_server
-ExecStart=/home/centos/cc_stat_server/venv/bin/gunicorn  --reload --bind 127.0.0.1:8000 --access-logfile /var/log/cc_stat_server/gunicorn-acces.log --error-logfile /var/log/cc_stat_server/gunicorn-error.log app:app
+ExecStart=/home/centos/cc_stat_server/venv/bin/gunicorn  --reload --bind 0.0.0.0:8000 --access-logfile /var/log/cc_stat_server/gunicorn-acces.log --error-logfile /var/log/cc_stat_server/gunicorn-error.log app:app
 
 
 ExecReload=/bin/kill -s HUP $MAINPID

@@ -1,0 +1,40 @@
+---
+- hosts: test
+  vars:
+    ssh_user: centos
+  tasks:
+  - name: ad repo from rpm
+    yum:
+      name: "{{ packages }}"
+    become: yes
+    vars:
+      packages:
+      - https://centos7.iuscommunity.org/ius-release.rpm
+  - name: ensure a list of packages installed
+    yum:
+      name: "{{ packages }}"
+    become: yes
+    vars:
+      packages:
+      - python36u
+      - git
+  - name: Synchronization of git repo on remote
+    synchronize:
+      src: /home/poq/PycharmProjects/cc_stat_server/.git/
+      dest: /home/{{ssh_user}}/cc_stat_server
+    vars:
+        ansible_user: "{{ssh_user}}"  #solved the problem
+
+  - name: turn to real bare repo
+    command: git config --bool core.bare true
+    args:
+      chdir: /home/{{ssh_user}}/cc_stat_server
+    vars:
+        ansible_user: "{{ssh_user}}"  #solved the problem
+
+
+#
+#  - name: deploy repo workspace
+#
+#  - name: setup.py the repo in a venv
+#

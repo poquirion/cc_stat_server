@@ -1,0 +1,24 @@
+#!/bin/bash
+
+release_path=${PWD%_bare}
+
+
+process_ref() {
+
+
+  oldhash=$(git rev-parse $1)
+  newhash=$(git rev-parse $2)
+  refname="$3"
+
+  if  [[ $refname =~ refs/tags/[0-9]+\.[0-9]+ ]]; then
+
+      tag=$(echo $refname | cut -d'/' -f 3)
+      echo tag:$tag
+      echo deploying to $release_path
+      git --work-tree=$release_path --git-dir=$PWD checkout $tag
+
+  fi
+}
+
+# Hooks get data from stdin, not args
+while read REF; do process_ref $REF; done
