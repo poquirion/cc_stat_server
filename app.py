@@ -1,19 +1,18 @@
 from flask import Flask, Response
+import json
 app = Flask(__name__)
 
 
 from cc_stat_server import back
 
-@app.route('/')
+@app.route('/full')
 def reports():
-    r = Response(back.reports())
-    r.content_type = "text/plain"
+    r = Response(json.dumps(back.reports()))
+    r.content_type = "application/json"
     return r
 
 @app.route('/pouet')
 def pouet():
-    r = Response(back.reports())
-    r.content_type = "text/plain"
     return "Pouet\nPouet en effet!"
 
 
