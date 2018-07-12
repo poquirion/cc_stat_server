@@ -1,16 +1,17 @@
-import os
-import time
-import datetime
-import re
 import copy
+import datetime
+import json
+import os
+import re
+import time
+
+from pathlib import Path
 
 from fabric import Connection
-# from fabric.context_managers import shell_env
-from pathlib import Path
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 report_sh = os.path.join(dir_path, "get_report.sh")
-USER='moniteur'
+USER = 'poq'
 HOME = str(Path.home())
 
 class InfoCluster(object):
@@ -21,19 +22,22 @@ class InfoCluster(object):
         self._stdout = None
         self.refresh_rate = refresh_rate * 3600  # hours to sec
         self.report_dir = '../report'
-        os.makedirs(self.report_dir, exist_ok=True)
+
+        try:
+            os.makedirs(self.report_dir, exist_ok=True)
+        except PermissionError:
+            self.report_dir = '/tmp/report'
+
         self.last_report_date = None
         self._raw = None
         self._report = {}
 
     def update_report(self, force=False):
 
-        # execute(runit, host=self.host, user=USER, key_filename="{}/.ssh/id_rsa".format(HOME))
-        # output = Connection(self.host).run(open(report_sh).read())
         report_path = os.path.join(dir_path, self.report_dir, self.host)
 
         if not os.path.isfile(report_path) or time.time() - os.path.getmtime(report_path) > self.refresh_rate :
-            c = Connection(self.host, user='poq')
+            c = Connection(self.host, user=USER)
             env = {"LDAP_URL": self.ldap_url, "CCGROUP": self.cc_group}
             p = "&&".join(['{}={}'.format(k, v) for k, v in env.items()])
             with c.prefix(p):
@@ -132,14 +136,22 @@ config = [
 def reports():
 
     conf = copy.copy(config)
-    for c in conf:
+    yield '['
+
+    n_machines = len(conf)
+    for i, c in enumerate(conf):
 
         c['report'] = InfoCluster(ldap_url=c['ldap_url'],
                                   hpc=c["hpc"], cc_group=c["cc_group"]).report
+        comma = ', '
+        if i + 1 == n_machines:
+            comma = ''
 
-    return conf
+        yield json.dumps(c) + comma
+
     # return "{}\n".format(100*'*').join((c['report'] for c in config))
 
+    yield ']'
 
 
 if __name__ == '__main__':
@@ -151,6 +163,5 @@ if __name__ == '__main__':
     # gra = InfoCluster(ldap_url=ldap, hpc=hpc, cc_group=cc_group)
 
     # print(gra.report)
-    import pprint
     # pprint.pprint(reports())
     print(reports())
