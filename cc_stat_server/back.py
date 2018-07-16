@@ -27,6 +27,7 @@ class InfoCluster(object):
             os.makedirs(self.report_dir, exist_ok=True)
         except PermissionError:
             self.report_dir = '/tmp/report'
+            os.makedirs(self.report_dir, exist_ok=True)
 
         self.last_report_date = None
         self._raw = None
